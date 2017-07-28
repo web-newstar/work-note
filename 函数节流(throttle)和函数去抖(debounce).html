@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>throttle和debounce</title>
+    <script>
+        window.onload = function () {
+            // 1 什么是debounce
+            // 定义:如果用手指按住一个弹簧,它将不会弹起直到你松手为止;也就是说当调用动作n毫秒后,才会执行该动作,若在这n毫秒内又调用此动作则重新计算执行时间   
+            /**
+                * 空闲控制 返回函数连续调用时，空闲时间必须大于或等于 idle，action 才会执行
+                * @param idle   {number}    空闲时间，单位毫秒
+                * @param action {function}  请求关联函数，实际应用需要调用的函数
+                * @return {function}    返回客户调用函数
+                */
+            // 简单实现
+            var debounce = function (idle, action) {
+                var last
+                console.log("eeee");
+                return function () {
+                    var ctx = this, args = arguments
+                    clearTimeout(last)
+                    last = setTimeout(function () {
+                        action.apply(ctx, args)
+                    }, idle)
+                }
+            }
+            function action() {
+                console.log("500毫秒发送一次ajax")
+            }
+            var Element = document.getElementById("test");
+            if (window.addEventListener) {
+                Element.addEventListener("keyup", debounce(500, action));
+            }
+            // 2 什么是throttle
+            //定义:如果将水龙头拧紧直到水是以水滴的形式流出,那你就会发现每隔一段时间,就会有一滴水流出.
+            //也就是说预先设定一个执行周期,当调用动作的时刻大于等于执行周期则执行该动作,然后就进入下一个新周期
+            /**
+            * 频率控制 返回函数连续调用时，action 执行频率限定为 次 / delay
+            * @param delay  {number}    延迟时间，单位毫秒
+            * @param action {function}  请求关联函数，实际应用需要调用的函数
+            * @return {function}    返回客户调用函数
+            */
+            var throttle = function (delay, action) {
+                var last = 0;
+                console.log
+                return function () {
+                    var curr = +new Date()
+                    if (curr - last > delay) {
+                        action.apply(this, arguments)
+                        last = curr
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <input type="text" id="test">
+    <input type="text" id="testThrottle">
+</body>
+
+</html>
